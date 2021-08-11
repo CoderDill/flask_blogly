@@ -27,6 +27,7 @@ def users_list():
 
 @app.route('/users/new')
 def add_user_form():
+    """Show add user form"""
     return render_template("add_user_form.html")
 
 
@@ -44,7 +45,21 @@ def add_user():
     return redirect('/users')
 
 
-# @app.route("/users/<user-id>")
-# @app.route("/users/<user-id>/edit")
-# @app.route("/users/<user-id>/edit", methods=["POST"])
-# @app.route("/users/<user-id>/delete", methods=["POST"])
+@app.route("/users/<int:user_id>")
+def show_user_details(user_id):
+    """Show user by id"""
+    user = User.query.get_or_404(user_id)
+    return render_template("details.html", user=user)
+
+# @app.route("/users/<user_id>/edit")
+
+# @app.route("/users/<user_id>/edit", methods=["POST"])
+
+
+@app.route("/users/<user_id>/delete", methods=["POST"])
+def remove_user(user_id):
+    user = User.query.get(user_id)
+    db.session.delete(user)
+    db.session.commit()
+
+    return redirect("/users")

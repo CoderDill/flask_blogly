@@ -1,10 +1,32 @@
 {% extends "base.html" %} {% block title %}{% endblock%} {% block content%}
 <h1>Add User</h1>
-<form action="/users/new" method="POST">
-  <input type="text" name="first_name" placeholder="first_name" />
-  <input type="text" name="last_name" placeholder="last_name" />
-  <input type="url" name="image_url" placeholder="image_url" />
-  <button>Add User</button>
+<form action="/users/new" method="POST" class="mb-2">
+  <label for="first_name">First Name</label>
+  <input
+    type="text"
+    id="first_name"
+    name="first_name"
+    placeholder="Enter first name"
+  />
+  <label for="last_name">Last Name</label>
+  <input
+    type="text"
+    id="last_name"
+    name="last_name"
+    placeholder="Enter last name"
+  />
+  <label for="image_url">Image URL</label>
+  <input
+    type="url"
+    id="image_url"
+    name="image_url"
+    placeholder="Enter image url"
+  />
+  <button class="btn btn-primary">Add User</button>
 </form>
-<button onclick="location.href='/users'">Users List</button>
+
+<button onclick="location.href='/users'" class="btn btn-primary">
+  Users List
+</button>
+
 {%endblock%}
