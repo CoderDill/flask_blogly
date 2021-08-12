@@ -51,7 +51,12 @@ def show_user_details(user_id):
     user = User.query.get_or_404(user_id)
     return render_template("details.html", user=user)
 
-# @app.route("/users/<user_id>/edit")
+
+@app.route("/users/<int:user_id>/edit")
+def show_edit_form(user_id):
+    """Show edit form"""
+    user = User.query.get_or_404(user_id)
+    return render_template("edit_form.html", user=user)
 
 # @app.route("/users/<user_id>/edit", methods=["POST"])
 
