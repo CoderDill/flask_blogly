@@ -82,3 +82,33 @@ def remove_user(user_id):
     db.session.commit()
 
     return redirect("/users")
+
+
+@app.route("/users/<int: user_id>/posts/new")
+def show_post_form(user_id):
+    """Show form to add a post for that user"""
+
+
+@app.route("/users/<int: user_id>/posts/new", methods=["POST"])
+def handle_add_post(user_id):
+    """Handle add form; add post and redirect to the user detail page."""
+
+
+@app.route("/posts/<int: post_id>")
+def show_post(post_id):
+    """Show Post and buttons for edit/delete"""
+
+
+@app.route("/posts/<int: post_id>/edit")
+def show_edit_post_form(post_id):
+    """Show form to edit post, cancel to go back"""
+
+
+@app.route("/posts/<int: post_id>/edit", methods=["POST"])
+def show_post_form(post_id):
+    """Handle editing of a post. Redirect back to the post view"""
+
+
+@app.route("/posts/<int: post_id>/delete")
+def delete_post(post_id):
+    """Delete Post"""

@@ -1,6 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy
 import datetime
 
+from sqlalchemy.orm import backref
+
 """Models for Blogly."""
 
 db = SQLAlchemy()
@@ -22,7 +24,11 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     first_name = db.Column(db.String(20), nullable=False)
     last_name = db.Column(db.String(30), nullable=False)
-    image_url = db.Column(db.String)
+    image_url = db.Column(
+        db.String, default='https://st4.depositphotos.com/14953852/22772/v/600/depositphotos_227725020-stock-illustration-image-available-icon-flat-vector.jpg')
+
+    def __repr__(self) -> str:
+        return f"<User {self.first_name} {self.last_name} {self.image_url} >"
 
 
 class Post(db.Model):
@@ -37,4 +43,7 @@ class Post(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey(
         'users.id'), nullable=False, unique=True)
 
-    user = db.relationship('User')
+    user = db.relationship('User', backref='posts')
+
+    def __repr__(self) -> str:
+        return f"<Post {self.title} {self.content} {self.created_at} {self.user_id} >"
