@@ -48,8 +48,11 @@ def add_user():
 @app.route("/users/<int:user_id>")
 def show_user_details(user_id):
     """Show user by id"""
+
+    posts = Post.query.filter_by(user_id=user_id).limit(3)
+
     user = User.query.get_or_404(user_id)
-    return render_template("details.html", user=user)
+    return render_template("details.html", user=user, posts=posts)
 
 
 @app.route("/users/<int:user_id>/edit")
@@ -108,9 +111,9 @@ def handle_add_post(user_id):
 @app.route("/posts/<int:post_id>")
 def show_post(post_id):
     """Show Post and buttons for edit/delete"""
-    
 
-    post = Post.query.get(post_id)
+    post = Post.query.filter(Post.id == post_id).first()
+    print(f"---------------{post}")
     user_id = post.user_id
     user = User.query.get_or_404(user_id)
 
@@ -120,11 +123,23 @@ def show_post(post_id):
 @app.route("/posts/<int:post_id>/edit")
 def show_edit_post_form(post_id):
     """Show form to edit post, cancel to go back"""
+    post = Post.query.get(post_id)
+
+    return render_template("edit_post_form.html", post=post)
 
 
 @app.route("/posts/<int:post_id>/edit", methods=["POST"])
 def handle_edit_post(post_id):
     """Handle editing of a post. Redirect back to the post view"""
+    title = request.form["title"]
+    content = request.form["content"]
+
+    post = Post.query.get(post_id)
+    post.title = title
+    post.content = content
+
+    db.session.commit()
+    return redirect(f"/posts/{post_id}")
 
 
 @app.route("/posts/<int:post_id>/delete")
@@ -132,8 +147,9 @@ def delete_post(post_id):
     """Delete Post"""
 
     post = Post.query.get(post_id)
+    user_id = post.user_id
     db.session.delete(post)
 
     db.session.commit()
 
-    return redirect(f"/posts/{post_id}")
+    return redirect(f"/users/{user_id}")

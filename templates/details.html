@@ -21,7 +21,11 @@
       <div class="col-md-4">
         <h4>Posts</h4>
         <ul>
-          <li></li>
+          {% for post in posts%}
+          <li>
+            <a href="/posts/{{post.id}}">{{post.title}}</a>
+          </li>
+          {% endfor%}
         </ul>
         <button
           onclick="location.href='/users/{{user.id}}/posts/new'"
