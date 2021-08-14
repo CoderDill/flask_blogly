@@ -1,3 +1,4 @@
+from enum import unique
 from flask_sqlalchemy import SQLAlchemy
 import datetime
 from sqlalchemy.orm import backref
@@ -45,3 +46,17 @@ class Post(db.Model):
 
     def __repr__(self) -> str:
         return f"<Post {self.title} {self.content} {self.created_at} {self.user_id} >"
+
+class Tag(db.Model):
+    """Tag"""
+
+    __tablename__ = 'tags'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(30), unique=True, nullable=False)
+
+
+class PostTag(db.Model):
+    """PostTag"""
+
+    __tablename__ = 'posttags'
