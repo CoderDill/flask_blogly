@@ -97,23 +97,22 @@ def handle_add_post(user_id):
     title = request.form["title"]
     content = request.form["content"]
 
-    print(user_id)
-
     new_post = Post(title=title, content=content, user_id=user_id)
-
-    post_id = new_post.user_id
 
     db.session.add(new_post)
     db.session.commit()
 
-    return redirect(f"/posts/{post_id}")
+    return redirect(f"/posts/{new_post.id}")
 
 
 @app.route("/posts/<int:post_id>")
 def show_post(post_id):
     """Show Post and buttons for edit/delete"""
+    
+
     post = Post.query.get(post_id)
-    user = User.query.get_or_404(post_id)
+    user_id = post.user_id
+    user = User.query.get_or_404(user_id)
 
     return render_template("post_detail.html", post=post, user=user)
 
