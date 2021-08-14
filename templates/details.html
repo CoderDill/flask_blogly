@@ -1,23 +1,39 @@
 {% extends "base.html" %} {% block title %}{% endblock%} {% block content%}
-<div class="card mb-3" style="max-width: 540px">
-  <div class="row g-0">
-    <div class="col-md-4">
-      <img src="{{user.image_url}}" class="img-fluid rounded-start" />
-    </div>
-    <div class="col-md-8">
-      <div class="card-body">
-        <h5 class="card-title">{{user.first_name}} {{user.last_name}}</h5>
+<div class="container">
+  <div class="card mb-3" style="max-width: 540px">
+    <div class="row g-0">
+      <div class="col-md-4">
+        <img src="{{user.image_url}}" class="img-fluid rounded-start" />
       </div>
-      <form action="/users/{{user.id}}/edit">
-        <button class="btn btn-success m-1">Edit</button>
-      </form>
-      <form action="/users/{{user.id}}/delete" method="POST">
-        <button class="btn btn-danger m-1">Delete</button>
-      </form>
+      <div class="col-md-4">
+        <div class="card-body">
+          <h5 class="card-title">{{user.first_name}} {{user.last_name}}</h5>
+        </div>
+
+        <form action="/users/{{user.id}}/edit">
+          <button class="btn btn-success m-1">Edit</button>
+        </form>
+        <form action="/users/{{user.id}}/delete" method="POST">
+          <button class="btn btn-danger m-1">Delete</button>
+        </form>
+      </div>
+
+      <div class="col-md-4">
+        <h4>Posts</h4>
+        <ul>
+          <li></li>
+        </ul>
+        <button
+          onclick="location.href='/users/{{user.id}}/posts/new'"
+          class="btn btn-primary"
+        >
+          Add Post
+        </button>
+      </div>
     </div>
   </div>
+  <button onclick="location.href='/users'" class="btn btn-primary m-2">
+    Users List
+  </button>
 </div>
-<button onclick="location.href='/users'" class="btn btn-primary m-2">
-  Users List
-</button>
 {%endblock%}

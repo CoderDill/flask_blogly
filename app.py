@@ -84,31 +84,57 @@ def remove_user(user_id):
     return redirect("/users")
 
 
-@app.route("/users/<int: user_id>/posts/new")
+@app.route("/users/<int:user_id>/posts/new")
 def show_post_form(user_id):
     """Show form to add a post for that user"""
+    user = User.query.get_or_404(user_id)
+    return render_template("add_post.html", user=user)
 
 
-@app.route("/users/<int: user_id>/posts/new", methods=["POST"])
+@app.route("/users/<int:user_id>/posts/new", methods=["POST"])
 def handle_add_post(user_id):
     """Handle add form; add post and redirect to the user detail page."""
+    title = request.form["title"]
+    content = request.form["content"]
+
+    print(user_id)
+
+    new_post = Post(title=title, content=content, user_id=user_id)
+
+    post_id = new_post.user_id
+
+    db.session.add(new_post)
+    db.session.commit()
+
+    return redirect(f"/posts/{post_id}")
 
 
-@app.route("/posts/<int: post_id>")
+@app.route("/posts/<int:post_id>")
 def show_post(post_id):
     """Show Post and buttons for edit/delete"""
+    post = Post.query.get(post_id)
+    user = User.query.get_or_404(post_id)
+
+    return render_template("post_detail.html", post=post, user=user)
 
 
-@app.route("/posts/<int: post_id>/edit")
+@app.route("/posts/<int:post_id>/edit")
 def show_edit_post_form(post_id):
     """Show form to edit post, cancel to go back"""
 
 
-@app.route("/posts/<int: post_id>/edit", methods=["POST"])
-def show_post_form(post_id):
+@app.route("/posts/<int:post_id>/edit", methods=["POST"])
+def handle_edit_post(post_id):
     """Handle editing of a post. Redirect back to the post view"""
 
 
-@app.route("/posts/<int: post_id>/delete")
+@app.route("/posts/<int:post_id>/delete")
 def delete_post(post_id):
     """Delete Post"""
+
+    post = Post.query.get(post_id)
+    db.session.delete(post)
+
+    db.session.commit()
+
+    return redirect(f"/posts/{post_id}")
