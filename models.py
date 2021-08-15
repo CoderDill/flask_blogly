@@ -46,6 +46,7 @@ class Post(db.Model):
     user = db.relationship('User', backref='posts')
 
     posttag = db.relationship('PostTag', backref="post")
+    tags = db.relationship('Tag', secondary="posttags", backref="posts")
 
     def __repr__(self) -> str:
         return f"<Post {self.title} {self.content} {self.created_at} {self.user_id} >"

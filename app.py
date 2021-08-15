@@ -153,3 +153,9 @@ def delete_post(post_id):
     db.session.commit()
 
     return redirect(f"/users/{user_id}")
+
+@app.route('/tags')
+def show_tags():
+    """Show tags"""
+
+    return render_template("show_tags.html")
