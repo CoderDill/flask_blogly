@@ -60,8 +60,6 @@ class Tag(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(30), unique=True, nullable=False)
 
-    post = db.relationship('Post', backref='tags')
-
     posttag = db.relationship('PostTag', backref="tag")
 
 
