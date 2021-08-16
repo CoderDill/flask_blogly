@@ -167,7 +167,6 @@ def list_tags():
 def show_tag_detail(tag_id):
     """Show tag detail"""
     tag = Tag.query.get(tag_id)
-    
 
     return render_template("tag_detail.html", tag=tag)
 
@@ -192,9 +191,10 @@ def handel_new_tag():
 @app.route("/tags/<int:tag_id>/edit")
 def show_edit_tag_form(tag_id):
     """Show form to edit post, cancel to go back"""
-    tag = Tag.query.get(tag_id)
+    tag = Tag.query.get_or_404(tag_id)
+    posts = Post.query.all()
 
-    return render_template("edit_tag_form.html", tag=tag)
+    return render_template("edit_tag_form.html", tag=tag, posts=posts)
 
 
 @app.route("/tags/<int:tag_id>/edit", methods=["POST"])
@@ -206,7 +206,7 @@ def handle_edit_tag(tag_id):
     tag.name = name
 
     db.session.commit()
-    return redirect(f"/posts/{tag_id}")
+    return redirect(f"/tags/{tag_id}")
 
 
 @app.route("/tags/<int:tag_id>/delete")
@@ -219,3 +219,10 @@ def delete_tag(tag_id):
     db.session.commit()
 
     return redirect(f"/tags")
+
+
+@app.route("/tags/posts/<int:post_id>")
+def tags_to_posts(post_id):
+    """Handle when post link is clicked from tag list"""
+
+    return redirect(f"/posts/{post_id}")
