@@ -1,6 +1,6 @@
 from flask import Flask, request, render_template, redirect, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
-from models import db, connect_db, User, Post
+from models import db, connect_db, User, Post, Tag, PostTag
 
 """Blogly application."""
 
@@ -154,8 +154,68 @@ def delete_post(post_id):
 
     return redirect(f"/users/{user_id}")
 
-@app.route('/tags')
-def show_tags():
-    """Show tags"""
 
-    return render_template("show_tags.html")
+@app.route('/tags')
+def list_tags():
+    """List tags"""
+    tags = Tag.query.all()
+
+    return render_template("list_tags.html", tags=tags)
+
+
+@app.route('/tags/<int:tag_id>')
+def show_tag_detail(tag_id):
+    """Show tag detail"""
+    tag = Tag.query.get(tag_id)
+    
+
+    return render_template("tag_detail.html", tag=tag)
+
+
+@app.route('/tags/new')
+def add_tag():
+    """Add tag form"""
+    return render_template("add_tag_form.html")
+
+
+@app.route('/tags/new', methods=["POST"])
+def handel_new_tag():
+    name = request.form['name']
+
+    new_tag = Tag(name=name)
+    db.session.add(new_tag)
+    db.session.commit()
+
+    return redirect(f"/tags")
+
+
+@app.route("/tags/<int:tag_id>/edit")
+def show_edit_tag_form(tag_id):
+    """Show form to edit post, cancel to go back"""
+    tag = Tag.query.get(tag_id)
+
+    return render_template("edit_tag_form.html", tag=tag)
+
+
+@app.route("/tags/<int:tag_id>/edit", methods=["POST"])
+def handle_edit_tag(tag_id):
+    """Handle editing of a post. Redirect back to the post view"""
+    name = request.form["name"]
+
+    tag = Tag.query.get(tag_id)
+    tag.name = name
+
+    db.session.commit()
+    return redirect(f"/posts/{tag_id}")
+
+
+@app.route("/tags/<int:tag_id>/delete")
+def delete_tag(tag_id):
+    """Delete Post"""
+
+    tag = Post.query.get(tag_id)
+    db.session.delete(tag)
+
+    db.session.commit()
+
+    return redirect(f"/tags")

@@ -1,0 +1,13 @@
+{% extends "base.html" %} {% block title %}{% endblock%} {% block content%}
+<h1>Add Tag</h1>
+<form action="/tags/new" method="POST" class="mb-2">
+  <label for="name">Name</label>
+  <input type="text" id="name" name="name" placeholder="Enter name" />
+  <button class="btn btn-primary">Add Tag</button>
+</form>
+
+<button onclick="location.href='/tags'" class="btn btn-primary">
+  Tags List
+</button>
+
+{%endblock%}
