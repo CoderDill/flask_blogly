@@ -7,6 +7,21 @@
     <label for="content">Content</label>
     <input type="text" id="content" name="content" />
     <button class="btn btn-success">Add Post</button>
+    <div>
+      {% for tag in tags %}
+      <div>
+        <input
+          type="checkbox"
+          value="{{ tag.id }}"
+          id="tag_{{ tag.id }}"
+          name="tags"
+        />
+        <label for="tag_{{ tag.id }}">
+          {{ tag.name }}
+        </label>
+      </div>
+      {% endfor %}
+    </div>
   </form>
   <button
     onclick="location.href='/users/{{user.id}}'"

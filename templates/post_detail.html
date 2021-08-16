@@ -3,6 +3,14 @@
   <h1>{{post.title}}</h1>
   <p>{{post.content}}</p>
   <h4>By {{user.first_name}} {{user.last_name}}</h4>
+  {% if post.tags %}
+  <p>
+    <b>Tags:</b>
+    {% for tag in post.tags %}
+    <a href="/tags/{{ tag.id }}">{{ tag.name }} </a>
+    {% endfor %}
+  </p>
+  {% endif %}
   <div>
     <button
       class="btn btn-outline-primary"

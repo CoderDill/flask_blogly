@@ -91,16 +91,20 @@ def remove_user(user_id):
 def show_post_form(user_id):
     """Show form to add a post for that user"""
     user = User.query.get_or_404(user_id)
-    return render_template("add_post.html", user=user)
+    tags = Tag.query.all()
+
+    return render_template("add_post.html", user=user, tags=tags)
 
 
-@app.route("/users/<int:user_id>/posts/new", methods=["POST"])
+@ app.route("/users/<int:user_id>/posts/new", methods=["POST"])
 def handle_add_post(user_id):
     """Handle add form; add post and redirect to the user detail page."""
     title = request.form["title"]
     content = request.form["content"]
+    tag_ids = [int(num) for num in request.form.getlist("tags")]
+    tags = Tag.query.filter(Tag.id.in_(tag_ids)).all()
 
-    new_post = Post(title=title, content=content, user_id=user_id)
+    new_post = Post(title=title, content=content, user_id=user_id, tags=tags)
 
     db.session.add(new_post)
     db.session.commit()
@@ -108,41 +112,42 @@ def handle_add_post(user_id):
     return redirect(f"/posts/{new_post.id}")
 
 
-@app.route("/posts/<int:post_id>")
+@ app.route("/posts/<int:post_id>")
 def show_post(post_id):
     """Show Post and buttons for edit/delete"""
 
     post = Post.query.filter(Post.id == post_id).first()
-    print(f"---------------{post}")
     user_id = post.user_id
     user = User.query.get_or_404(user_id)
 
     return render_template("post_detail.html", post=post, user=user)
 
 
-@app.route("/posts/<int:post_id>/edit")
+@ app.route("/posts/<int:post_id>/edit")
 def show_edit_post_form(post_id):
     """Show form to edit post, cancel to go back"""
     post = Post.query.get(post_id)
+    tags = Tag.query.all()
 
-    return render_template("edit_post_form.html", post=post)
+    return render_template("edit_post_form.html", post=post, tags=tags)
 
 
-@app.route("/posts/<int:post_id>/edit", methods=["POST"])
+@ app.route("/posts/<int:post_id>/edit", methods=["POST"])
 def handle_edit_post(post_id):
     """Handle editing of a post. Redirect back to the post view"""
-    title = request.form["title"]
-    content = request.form["content"]
-
     post = Post.query.get(post_id)
-    post.title = title
-    post.content = content
+    post.title = request.form["title"]
+    post.content = request.form["content"]
 
+    tag_ids = [int(num) for num in request.form.getlist("tags")]
+    post.tags = Tag.query.filter(Tag.id.in_(tag_ids)).all()
+
+    db.session.add(post)
     db.session.commit()
     return redirect(f"/posts/{post_id}")
 
 
-@app.route("/posts/<int:post_id>/delete")
+@ app.route("/posts/<int:post_id>/delete")
 def delete_post(post_id):
     """Delete Post"""
 
@@ -155,7 +160,7 @@ def delete_post(post_id):
     return redirect(f"/users/{user_id}")
 
 
-@app.route('/tags')
+@ app.route('/tags')
 def list_tags():
     """List tags"""
     tags = Tag.query.all()
@@ -163,7 +168,7 @@ def list_tags():
     return render_template("list_tags.html", tags=tags)
 
 
-@app.route('/tags/<int:tag_id>')
+@ app.route('/tags/<int:tag_id>')
 def show_tag_detail(tag_id):
     """Show tag detail"""
     tag = Tag.query.get(tag_id)
@@ -171,13 +176,13 @@ def show_tag_detail(tag_id):
     return render_template("tag_detail.html", tag=tag)
 
 
-@app.route('/tags/new')
+@ app.route('/tags/new')
 def add_tag():
     """Add tag form"""
     return render_template("add_tag_form.html")
 
 
-@app.route('/tags/new', methods=["POST"])
+@ app.route('/tags/new', methods=["POST"])
 def handel_new_tag():
     name = request.form['name']
 
@@ -188,7 +193,7 @@ def handel_new_tag():
     return redirect(f"/tags")
 
 
-@app.route("/tags/<int:tag_id>/edit")
+@ app.route("/tags/<int:tag_id>/edit")
 def show_edit_tag_form(tag_id):
     """Show form to edit post, cancel to go back"""
     tag = Tag.query.get_or_404(tag_id)
@@ -197,7 +202,7 @@ def show_edit_tag_form(tag_id):
     return render_template("edit_tag_form.html", tag=tag, posts=posts)
 
 
-@app.route("/tags/<int:tag_id>/edit", methods=["POST"])
+@ app.route("/tags/<int:tag_id>/edit", methods=["POST"])
 def handle_edit_tag(tag_id):
     """Handle editing of a post. Redirect back to the post view"""
     name = request.form["name"]
@@ -209,7 +214,7 @@ def handle_edit_tag(tag_id):
     return redirect(f"/tags/{tag_id}")
 
 
-@app.route("/tags/<int:tag_id>/delete")
+@ app.route("/tags/<int:tag_id>/delete")
 def delete_tag(tag_id):
     """Delete Post"""
 
@@ -221,7 +226,7 @@ def delete_tag(tag_id):
     return redirect(f"/tags")
 
 
-@app.route("/tags/posts/<int:post_id>")
+@ app.route("/tags/posts/<int:post_id>")
 def tags_to_posts(post_id):
     """Handle when post link is clicked from tag list"""
 
